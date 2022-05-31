@@ -25,10 +25,10 @@ jobs:
     - run: npm run build --if-present
 
     - name: setup aliyun oss
-    - uses: manyuanrong/setup-ossutil@v2.0
+      uses: manyuanrong/setup-ossutil@v2.0
       with:
         endpoint: "tudou233.oss-cn-hangzhou.aliyuncs.com"
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
     - name: cp files to aliyun
-    - run: ossutil cp -rf ./dist oss://tudou233/
+      run: ossutil cp -rf ./dist oss://tudou233/
