@@ -22,4 +22,4 @@ jobs:
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
     - name: cp files to aliyun
-      run: ossutil cp -r oss://tudou233/stable/ oss://tudou233/master/
+      run: ossutil cp -rf oss://tudou233/stable/ oss://tudou233/master/
