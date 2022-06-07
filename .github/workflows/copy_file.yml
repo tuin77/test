@@ -15,7 +15,11 @@ jobs:
   printInputs:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Log level: ${{ github.event.inputs.logLevel }}"
-          echo "Tags: ${{ github.event.inputs.tags }}"
-          echo "Inputs: ${{ toJson(github.event.inputs) }}"
+    - name: setup aliyun oss
+      uses: manyuanrong/setup-ossutil@v2.0
+      with:
+        endpoint: "oss-cn-hangzhou.aliyuncs.com"
+        access-key-id: ${{ secrets.KEY }}
+        access-key-secret: ${{ secrets.SECRET }}
+    - name: cp files to aliyun
+      run: ossutil cp oss://tudou233/stable/ oss://tudou233/master/
