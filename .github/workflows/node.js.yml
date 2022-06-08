@@ -42,7 +42,7 @@ jobs:
 
     - name: Generator oss path
       id: extract-oss-path
-      run: echo "::set-output name=oss-path::$(if [ 'master' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
+      run: echo "::set-output name=oss-path::$(if [ 'main' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
 
     # 部署到阿里云
     - name: CP files to aliyun
