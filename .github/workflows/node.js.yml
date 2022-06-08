@@ -5,9 +5,11 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - release/test1-*
+      - release/test2-*
+      - hotfix/hotfix-*
+      - main
 
 jobs:
   build:
@@ -24,11 +26,34 @@ jobs:
     - run: npm install
     - run: npm run build --if-present
 
-    - name: setup aliyun oss
-      uses: manyuanrong/setup-ossutil@v2.0
+
+
+    - name: Deploy
+      uses: yizhoumo/setup-ossutil@v1
       with:
-        endpoint: "oss-cn-hangzhou.aliyuncs.com"
+        endpoint: oss-cn-hangzhou.aliyuncs.com
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
-    - name: cp files to aliyun
-      run: ossutil cp -rf ./dist oss://tudou233/stable/
+
+    # 获取 branch 对应的 oss 路径
+    - name: Extract branch oss prefix
+      run: echo "::set-output name=oss-prefix::$(echo ${{steps.extract-branch.outputs.branch}} | awk '{split($0,a,"/" );print a[2]}' | awk '{split($0,a,"-");print a[1]}')"
+      id: extract-oss-prefix
+
+    - name: Generator oss path
+      id: extract-oss-path
+      run: echo "::set-output name=oss-path::$(if [ 'master' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
+
+    # 部署到阿里云
+    - name: CP files to aliyun
+      if: steps.extract-oss-path.outputs.oss-path != ''
+      run: ossutil cp -rf ./dist ${{ steps.extract-oss-path.outputs.oss-path }}
+
+    # - name: setup aliyun oss
+    #   uses: manyuanrong/setup-ossutil@v2.0
+    #   with:
+    #     endpoint: "oss-cn-hangzhou.aliyuncs.com"
+    #     access-key-id: ${{ secrets.KEY }}
+    #     access-key-secret: ${{ secrets.SECRET }}
+    # - name: cp files to aliyun
+    #   run: ossutil cp -rf ./dist oss://tudou233/stable/
