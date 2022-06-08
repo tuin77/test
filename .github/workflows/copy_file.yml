@@ -1,18 +1,10 @@
 name: Manual Trigger
 
-on:
-  # 手动触发事件
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'
+# 手动触发事件
+on: workflow_dispatch
 
 jobs:
-  printInputs:
+  publish-code:
     runs-on: ubuntu-latest
     steps:
     - name: setup aliyun oss
@@ -21,5 +13,5 @@ jobs:
         endpoint: "oss-cn-hangzhou.aliyuncs.com"
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
-    - name: cp files to aliyun
+    - name: cp files to master
       run: ossutil cp -rf oss://tudou233/stable/ oss://tudou233/master/
