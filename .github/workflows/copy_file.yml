@@ -5,6 +5,7 @@ on: workflow_dispatch
 
 jobs:
   publish-code:
+    runs-on: ubuntu-latest
     steps:
     - name: cp files to master
       uses: manyuanrong/setup-ossutil@v2.0
