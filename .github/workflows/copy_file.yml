@@ -12,4 +12,4 @@ jobs:
         endpoint: "oss-cn-hangzhou.aliyuncs.com"
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
-      run: ossutil cp -rf oss://tudou233/stable/ oss://tudou233/master/
+    - run: ossutil cp -rf oss://tudou233/stable/ oss://tudou233/master/
