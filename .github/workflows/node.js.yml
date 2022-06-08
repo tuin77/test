@@ -17,6 +17,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 获取当前 branch
+    - name: Extract branch name
+      run: echo "::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract-branch
+
+    # 获取 branch 对应的 oss 路径
+    - name: Extract branch oss prefix
+      run: echo "::set-output name=oss-prefix::$(echo ${{steps.extract-branch.outputs.branch}} | awk '{split($0,a,"/" );print a[2]}' | awk '{split($0,a,"-");print a[1]}')"
+      id: extract-oss-prefix
+
+    - name: Generator oss path
+      id: extract-oss-path
+      run: echo "::set-output name=oss-path::$(if [ 'main' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
+      run: echo "${{steps.extract-branch.outputs.branch}}"
+      run: echo "${{steps.extract-oss-path.outputs.oss-path}}"
+
     - uses: actions/checkout@v3
     - name: Use Node.js
       uses: actions/setup-node@v3
@@ -34,15 +50,6 @@ jobs:
         endpoint: oss-cn-hangzhou.aliyuncs.com
         access-key-id: ${{ secrets.KEY }}
         access-key-secret: ${{ secrets.SECRET }}
-
-    # 获取 branch 对应的 oss 路径
-    - name: Extract branch oss prefix
-      run: echo "::set-output name=oss-prefix::$(echo ${{steps.extract-branch.outputs.branch}} | awk '{split($0,a,"/" );print a[2]}' | awk '{split($0,a,"-");print a[1]}')"
-      id: extract-oss-prefix
-
-    - name: Generator oss path
-      id: extract-oss-path
-      run: echo "::set-output name=oss-path::$(if [ 'main' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
 
     # 部署到阿里云
     - name: CP files to aliyun
