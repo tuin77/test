@@ -29,7 +29,17 @@ jobs:
 
     - name: Generator oss path
       id: extract-oss-path
-      run: echo "::set-output name=oss-path::$(if [ 'main' == '${{steps.extract-branch.outputs.branch}}' ]; then echo 'oss://tudou233/stable/'; else echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; fi)"
+      run: echo 
+        "
+        {name}=
+         { oss-path::$
+          (
+          if [ 'main' == '${{steps.extract-branch.outputs.branch}}' ]; then 
+            echo 'oss://tudou233/stable/'; 
+          else 
+            echo 'oss://tudou233/${{ steps.extract-oss-prefix.outputs.oss-prefix }}/'; 
+          fi
+          )}" >> $GITHUB_OUTPUT
     - run: echo "${{steps.extract-branch.outputs.branch}}"
     - run: echo "${{steps.extract-oss-path.outputs.oss-path}}"
 
